@@ -24,4 +24,10 @@ public class ResourceServiceImpl implements ResourceService {
 		return resourceRepository.findAll();
 	}
 
+	@Override
+	public List<Profile> getProfilesByMobileNo(String mobile) {
+		// TODO Auto-generated method stub
+		return resourceRepository.findByResourceNumber(mobile);
+	}
+
 }

@@ -1,11 +1,5 @@
 package com.smydata.model;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-
-@JsonDeserialize(as=ResourceDetail.class)
 public class ResourceDetail {
 	
 	private String resourceName;
@@ -23,20 +17,13 @@ public class ResourceDetail {
 	private String employerEmail;
 	private String employerNumber;
 	private String comments;
-	private MultipartFile file;
+//	private String fileName;
+//	private MultipartFile file;
 	
 	public ResourceDetail() {
 		super();
 	}
 	
-	public MultipartFile getFile() {
-		return file;
-	}
-
-	public void setFile(MultipartFile file) {
-		this.file = file;
-	}
-
 	public String getResourceName() {
 		return resourceName;
 	}

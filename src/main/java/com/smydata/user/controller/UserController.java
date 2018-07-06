@@ -3,6 +3,9 @@ package com.smydata.user.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.smydata.model.User;
 import com.smydata.model.util.SmydataConstants;
@@ -22,6 +26,7 @@ import com.smydata.user.service.UserService;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
+@SessionAttributes("userData")
 public class UserController implements SmydataConstants {
 
 	@Autowired
@@ -84,20 +89,28 @@ public class UserController implements SmydataConstants {
 	}
 	
 	@PostMapping("/loginUser")
-	public ResponseEntity<?> loginUser(@RequestBody User user) {
+	public ResponseEntity<?> loginUser(@RequestBody User user,HttpServletRequest request) {
 		logger.info("===>Begin Execution of loginUser method===>");
 		ResponseEntity<?> results = null;
 		User userData = null;
 
 		try {
+			HttpSession session = request.getSession(true);
+			if(session != null) {
+				Object obj = session.getAttribute("userData");
+				if(obj!=null && obj instanceof User)
+					session.removeAttribute("userData");
+			}
 			if (user != null) {
 				logger.info("===>loginUser mobile::" + user.getMobile());
 				userData = userService.getUserDetails(user.getMobile());
 				if (userData != null) {
-					if (userData.getMobile() != null && userData.getMobile().equalsIgnoreCase(user.getMobile())
+					if (userData.getMobile() != null 
+							&& userData.getMobile().equalsIgnoreCase(user.getMobile())
 							&& userData.getPassword() != null
 							&& userData.getPassword().equalsIgnoreCase(user.getPassword())) {
 						results = new ResponseEntity<>(userData, HttpStatus.OK);
+						session.setAttribute("userData", userData);
 					} else {
 						results = new ResponseEntity<>(userData, HttpStatus.OK);
 					}
