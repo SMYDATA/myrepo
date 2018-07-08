@@ -26,8 +26,7 @@ public class ResourceServiceImpl implements ResourceService {
 
 	@Override
 	public List<Profile> getProfilesByMobileNo(String mobile) {
-		// TODO Auto-generated method stub
-		return resourceRepository.findByResourceNumber(mobile);
+		return resourceRepository.findByUserMobile(mobile);
 	}
 
 }

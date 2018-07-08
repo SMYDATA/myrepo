@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -89,24 +90,23 @@ public class UserController implements SmydataConstants {
 	}
 	
 	@PostMapping("/loginUser")
-	public ResponseEntity<?> loginUser(@RequestBody User user,HttpServletRequest request) {
+	public ResponseEntity<?> loginUser(@RequestBody User user, HttpServletRequest request) {
 		logger.info("===>Begin Execution of loginUser method===>");
 		ResponseEntity<?> results = null;
 		User userData = null;
 
 		try {
-			HttpSession session = request.getSession(true);
-			if(session != null) {
+			HttpSession session = request.getSession();
+			if (session != null) {
 				Object obj = session.getAttribute("userData");
-				if(obj!=null && obj instanceof User)
+				if (obj != null && obj instanceof User)
 					session.removeAttribute("userData");
 			}
 			if (user != null) {
 				logger.info("===>loginUser mobile::" + user.getMobile());
 				userData = userService.getUserDetails(user.getMobile());
 				if (userData != null) {
-					if (userData.getMobile() != null 
-							&& userData.getMobile().equalsIgnoreCase(user.getMobile())
+					if (userData.getMobile() != null && userData.getMobile().equalsIgnoreCase(user.getMobile())
 							&& userData.getPassword() != null
 							&& userData.getPassword().equalsIgnoreCase(user.getPassword())) {
 						results = new ResponseEntity<>(userData, HttpStatus.OK);
@@ -122,7 +122,7 @@ public class UserController implements SmydataConstants {
 			}
 		} catch (Exception e) {
 			results = new ResponseEntity<>(userData, HttpStatus.NOT_FOUND);
-			logger.error("Error occured while login and error is:{}  ",e);
+			logger.error("Error occured while login and error is:{}  ", e);
 		}
 		logger.info("===>End Execution of loginUser method===>");
 		return results;

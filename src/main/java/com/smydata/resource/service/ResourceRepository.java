@@ -8,5 +8,5 @@ import com.smydata.model.Profile;
 
 
 public interface ResourceRepository extends JpaRepository<Profile,String> {
-	List<Profile> findByResourceNumber(String mobile);
+	List<Profile> findByUserMobile(String mobile);
 }

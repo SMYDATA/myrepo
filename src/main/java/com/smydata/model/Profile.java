@@ -50,12 +50,39 @@ public class Profile implements Serializable{
 	private String comments;
 	@Column(name="file_name")
 	private String fileName;
-	@Column(name="file")
+	@Column(name="file_content")
 	@Lob
-	byte[] file;
-
+	byte[] fileContent;
+	 @Column(name = "mimetype")
+	private String mimetype;
+	@Column(name="user_mobile")
+	private String userMobile;
 	public Profile() {
 		super();
+	}
+
+	public String getUserMobile() {
+		return userMobile;
+	}
+
+	public void setUserMobile(String userMobile) {
+		this.userMobile = userMobile;
+	}
+
+	public byte[] getFileContent() {
+		return fileContent;
+	}
+
+	public void setFileContent(byte[] fileContent) {
+		this.fileContent = fileContent;
+	}
+
+	public String getMimetype() {
+		return mimetype;
+	}
+
+	public void setMimetype(String mimetype) {
+		this.mimetype = mimetype;
 	}
 
 	public String getFileName() {
@@ -64,14 +91,6 @@ public class Profile implements Serializable{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
-
-	public byte[] getFile() {
-		return file;
-	}
-
-	public void setFile(byte[] file) {
-		this.file = file;
 	}
 
 	public String getResourceName() {
