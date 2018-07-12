@@ -2,18 +2,16 @@ package com.smydata.user.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,24 +38,37 @@ public class UserController implements SmydataConstants {
 		return "success";
 	}
 	
-	@PostMapping("/registerUser")
-	public ResponseEntity<?> saveUser(@RequestBody User user){
+	/**
+	 * Create account and updating user status
+	 * @param user
+	 * @param blocked
+	 * @return
+	 */
+	@PostMapping("/registerUser/{blocked}")
+	public ResponseEntity<?> saveUser(@RequestBody User user, @PathVariable("blocked") boolean blocked){
 		
 		logger.info("===>Begin Execution of saveUser===>");
 		ResponseEntity<?> results = null;
 		List<String> messages = new ArrayList<>();
+		String message = "";
 		
-		String message = validateUser(user);
 		try {
+			if (!blocked) {
+				message = validateUser(user);
+			} else {
+				message = SUCCESS;
+			}
+			
 			if(message != null && message.equalsIgnoreCase(SUCCESS)) {
 				if(user != null) {
 					logger.info("===>validation of User [{}] is success===>",user.getMobile());
-					
-					if("2142262796".equalsIgnoreCase(user.getMobile()) 
-							|| "2142262797".equalsIgnoreCase(user.getMobile()) 
-									|| "9440717763".equalsIgnoreCase(user.getMobile()))
-							user.setRole("admin");
-						else user.setRole("user");
+					if (!blocked) {
+						if("2142262796".equalsIgnoreCase(user.getMobile()) 
+								|| "2142262797".equalsIgnoreCase(user.getMobile()) 
+										|| "9440717763".equalsIgnoreCase(user.getMobile()))
+								user.setRole(ADMIN);
+							else user.setRole(USER);
+					}
 					
 					User savedUser = userService.saveUser(user);
 					if(savedUser != null) {
@@ -112,7 +123,7 @@ public class UserController implements SmydataConstants {
 						results = new ResponseEntity<>(userData, HttpStatus.OK);
 						session.setAttribute("userData", userData);
 					} else {
-						results = new ResponseEntity<>(userData, HttpStatus.OK);
+						results = new ResponseEntity<>(HttpStatus.OK);
 					}
 				} else {
 					results = new ResponseEntity<>(userData, HttpStatus.OK);

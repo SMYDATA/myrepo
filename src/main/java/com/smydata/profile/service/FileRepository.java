@@ -1,4 +1,4 @@
-package com.smydata.resource.service;
+package com.smydata.profile.service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

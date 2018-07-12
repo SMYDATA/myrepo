@@ -1,36 +1,85 @@
 package com.smydata.model;
 
-public class ResourceDetail {
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+
+@Entity
+@Table(name= "profile_history")
+public class ProfileHistory implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4243613311814987365L;
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="id")
+	private Long id;
+	@Column(name="resource_name")
 	private String resourceName;
+	@Column(name="resource_email")
 	private String resourceEmail;
+	@Column(name="resource_number")
 	private String resourceNumber;
+	@Column(name="resource_technology")
 	private String resourceTechnology;
+	@Column(name="resource_spec")
 	private String resourceSpec;
+	@Column(name="resource_exp")
 	private String resourceExp;
+	@Column(name="resource_visa_type")
 	private String resourceVisaType;
+	@Column(name="resource_location")
 	private String resourceLocation;
+	@Column(name="resource_bill_rate")
 	private String resourceBillRate;
+	@Column(name="resource_availability")
 	private String resourceAvailability;
+	@Column(name="client")
 	private String client;
+	@Column(name="employer_name")
 	private String employerName;
+	@Column(name="employer_email")
 	private String employerEmail;
+	@Column(name="employer_number")
 	private String employerNumber;
+	@Column(name="comments")
 	private String comments;
-	private boolean edit;
-//	private String fileName;
-//	private MultipartFile file;
-	
-	public ResourceDetail() {
+	@Column(name="file_name")
+	private String fileName;
+	/*@Column(name="file_content")
+	@Lob
+	byte[] fileContent;
+	 @Column(name = "mimetype")
+	private String mimetype;*/
+	@Column(name="user_mobile")
+	private String userMobile;
+	public ProfileHistory() {
 		super();
 	}
-	
-	public boolean isEdit() {
-		return edit;
+
+	public String getUserMobile() {
+		return userMobile;
 	}
 
-	public void setEdit(boolean edit) {
-		this.edit = edit;
+	public void setUserMobile(String userMobile) {
+		this.userMobile = userMobile;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	public String getResourceName() {

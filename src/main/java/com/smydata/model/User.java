@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.context.annotation.Scope;
-
 @Entity
 @Table(name="user")
 public class User implements Serializable {
@@ -30,11 +28,22 @@ public class User implements Serializable {
 	@Column(name="role")
 	private String role;
 	
+	@Column(name="blocked")
+	private boolean blocked;
+	
 	public User() {
 		super();
 	}
 
-	
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
+
 	public String getRole() {
 		return role;
 	}

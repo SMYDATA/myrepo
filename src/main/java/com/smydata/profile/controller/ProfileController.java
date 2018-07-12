@@ -1,8 +1,6 @@
-package com.smydata.resource.controller;
+package com.smydata.profile.controller;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,14 +8,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Null;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,25 +30,84 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.smydata.model.FileModel;
 import com.smydata.model.Profile;
+import com.smydata.model.ProfileHistory;
 import com.smydata.model.ResourceDetail;
-import com.smydata.resource.service.FileRepository;
-import com.smydata.resource.service.ResourceService;
+import com.smydata.profile.service.FileRepository;
+import com.smydata.profile.service.ProfileService;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
 @SessionAttributes("userData")
-public class ResourceController {
+public class ProfileController {
 	
 	@Autowired
-	private ResourceService resourceService;
+	private ProfileService resourceService;
 	
 	@Autowired
 	FileRepository fileRepository;
 	
 	private static Map<Integer,FileModel> filesMap = new HashMap<>();
+	private static List<ProfileHistory> profilesHistory = null;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
+	
+	/**
+     * Size of a byte buffer to read/write file
+     */
+//    private static final int BUFFER_SIZE = 4096;
+             
+/*  	@GetMapping("/downloadtmp")
+    public String doDownload(HttpServletRequest request,  HttpServletResponse response) throws IOException {
+//  		 logger.info(new FedExLogEntry("Download Template Controller method got invoked...."));
+		
+    	
+    	String fullPath = null;    
+        // get absolute path of the application
+        ServletContext context = request.getSession().getServletContext();
+        String appPath = context.getRealPath("");
+        // logger.info(new FedExLogEntry("appPath = " + appPath));
+         
+        // construct the complete absolute path of the file
+        appPath = appPath.replace("webapp", "resources");
+        fullPath = appPath + "/uploads/SHIPNGET_Template.xlsx";  
+      
+        File downloadFile = new File(fullPath);
+        FileInputStream inputStream = new FileInputStream(downloadFile);
+         
+        // get MIME type of the file
+        String mimeType = context.getMimeType(fullPath);
+        if (mimeType == null) {
+            // set to binary type if MIME mapping not found
+            mimeType = "application/octet-stream";
+        }
+//         logger.info(new FedExLogEntry("MIME type: " + mimeType));
+ 
+        // set content attributes for the response
+        response.setContentType(mimeType);
+        response.setContentLength((int) downloadFile.length());
+ 
+        // set headers for the response
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"%s\"",downloadFile.getName());
+        response.setHeader(headerKey, headerValue);
+ 
+        // get output stream of the response
+        OutputStream outStream = response.getOutputStream();
+ 
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int bytesRead = -1;
+ 
+        // write bytes read from the input stream into the output stream
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, bytesRead);
+        }
+ 
+        inputStream.close();
+        outStream.close();
+       return "done";
+    }*/
+
 
 	/*@PostMapping("/file/upload")
 	public String uploadMultipartFile(@RequestParam("uploadfile") MultipartFile file) {
@@ -68,6 +125,7 @@ public class ResourceController {
 		return fileRepository.findAll();
 	}*/
 	
+	@SuppressWarnings("unlikely-arg-type")
 	@PostMapping("/saveFile")
 	public void getUploadFile(@RequestParam("index")String index,@RequestParam("file") MultipartFile file) throws IOException {
 		
@@ -83,6 +141,7 @@ public class ResourceController {
 				logger.info("Empty file recievd for index :  "+index);
 			
 		} catch(Exception e) {
+			filesMap.remove(index);
 			logger.error("Error occured while saving attachment and error is:  ", e);
 		}
 	}
@@ -92,6 +151,8 @@ public class ResourceController {
 		logger.info("===>Begin Execution of saveResourceDetails===>");
 		ResponseEntity<?> results = null;
 		List<Profile> profiles = null;
+		List<ProfileHistory> profilesHistry = null;
+		List<Profile> profilesObject = null;
 //		List<ResourceDetail> resources = null;
 //		List<MultipartFile> uploadFiles = null;
 		try {
@@ -99,8 +160,14 @@ public class ResourceController {
 //			uploadFiles = mapper.readValue(file, new TypeReference<List<MultipartFile>>() {});
 //			resources = mapper.readValue(profile, new TypeReference<List<ResourceDetail>>() {});
 			if(resources != null && !resources.isEmpty()) {
-				List<Profile> profilesObject = convertResourceToProfileObject(resources, userMobile);
-				profiles = resourceService.saveResourceDetail(profilesObject);
+				profilesObject = convertResourceToProfileObject(resources, userMobile);
+				
+				if(profilesObject != null && !profilesObject.isEmpty()) {
+						profiles = resourceService.saveResourceDetail(profilesObject);//Save Profiles
+				}
+				 if(profilesHistory != null && !profilesHistory.isEmpty()) {
+							 profilesHistry = resourceService.saveProfileHistory(profilesHistory);//Save history of Profiles
+				 }
 				if(profiles != null && !profiles.isEmpty()) {
 					results = new ResponseEntity<>(profiles, HttpStatus.OK);
 				} else {
@@ -118,6 +185,22 @@ public class ResourceController {
 		return results;
 	}
 	
+	@GetMapping(value ="/getProfileHistroy/{userMobile}")
+	public ResponseEntity<?> getProfileHistory(@PathVariable("userMobile") String userMobile){
+		logger.info("===>Begin Execution of saveResourceDetails===>");
+		ResponseEntity<?> results = null;
+		List<ProfileHistory> profilesHistory = null;
+		try {
+			profilesHistory = resourceService.getProfileHistory(userMobile);
+			results = new ResponseEntity<>(profilesHistory, HttpStatus.OK);
+		} catch (Exception e) {
+			results = new ResponseEntity<>(profilesHistory, HttpStatus.NOT_FOUND);
+			logger.error("Error occured while getting Profile History and error is:  ", e);
+		}
+		logger.info("===>End Execution of saveResourceDetails===>");
+		return results;
+	}
+	
 	private List<Profile> convertResourceToProfileObject(List<ResourceDetail> resources, String userMobile) throws IOException {
 		List<Profile> profiles = new ArrayList<>();
 		/*Map<Integer,FileModel> filesMap = null;
@@ -128,6 +211,8 @@ public class ResourceController {
 				filesMap = (Map<Integer, FileModel>) object;
 			}
 		}*/
+		if(profilesHistory !=null && !profilesHistory.isEmpty())
+			profilesHistory.clear();
 				
 		for(int i=0;i<resources.size();i++) {
 			ResourceDetail resource = resources.get(i);
@@ -161,7 +246,14 @@ public class ResourceController {
 			profile.setResourceLocation(resource.getResourceLocation());
 			profile.setUserMobile(userMobile);
 			profiles.add(profile);
+			if(resource.isEdit()) {
+				ProfileHistory profileHistory = new ProfileHistory();
+				BeanUtils.copyProperties(profile,profileHistory);
+				profilesHistory = new ArrayList<>();
+				profilesHistory.add(profileHistory);
+			}
 		}
+		
 		return profiles;
 		
 	}
@@ -211,51 +303,40 @@ public class ResourceController {
 		return results;
 	}
 	
-	@GetMapping("/fileDownload/{mobile}")
-	public ResponseEntity<?> fileDownload(@PathVariable String mobile,HttpServletRequest request,HttpServletResponse response){
+	/**
+	 *  Method for handling file download request from client
+	 * @param mobile
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@GetMapping("/downloadProfile/{mobile}")
+	public ResponseEntity<?> downloadProfile(@PathVariable String mobile,HttpServletRequest request,HttpServletResponse response){
 		logger.info("===>Begin Execution of fileDownload===>");
 		ResponseEntity<?> results = null;
 		List<Profile> profiles = null;
 		try {
-			profiles = resourceService.getProfilesByMobileNo(mobile);
+			profiles = resourceService.getProfilesByResourceNo(mobile);
 			if(profiles != null && !profiles.isEmpty()) {
-				 // set content attributes for the response
+				
 				Profile profile = profiles.get(0);
-				/* String mimeType= URLConnection.guessContentTypeFromName(profile.getFileName());
-			        if(mimeType==null){
-			            System.out.println("mimetype is not detectable, will take default");
-			            mimeType = "application/octet-stream";
-			        }
-			        logger.info("===>mimeType::"+mimeType);*/
-				/*response.reset();
-		        response.setContentType(profile.getMimetype());
-		        response.setContentLength(profile.getFileContent().length);*/
-		        
 		        // set headers for the response
 		        String headerKey = "Content-Disposition";
 		        String headerValue = String.format("attachment; filename=\"%s\"",profile.getFileName());
-//		        response.setHeader(headerKey, headerValue);
-		        /*response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-		        response.setHeader("Pragma", "no-cache");
-		        response.setHeader("Expires", "0");
-		        response.setHeader("Content-disposition", "attachment;filename="+profile.getFileName());
-		        response.getOutputStream().write(profile.getFileContent());
-*/
-//	            response.getOutputStream().flush();
-//	            response.getOutputStream().close();
-//		        FileCopyUtils.copy(profile.getFileContent(), response.getOutputStream());
+
+		        // set content attributes for the response
 		        HttpHeaders headers = new HttpHeaders();
-		        //headers.add(headerKey, "attachment;filename="+profile.getFileName());
 		        headers.add(headerKey, headerValue);
 		        headers.add(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
-//		        headers.add(HttpHeaders.CONTENT_TYPE, profile.getMimetype());
 		        headers.add(HttpHeaders.PRAGMA,"no-cache");
 		        headers.add(HttpHeaders.EXPIRES,"0");
-//		        ByteArrayInputStream resource = new ByteArrayInputStream(profile.getFileContent());
-		        results =  ResponseEntity.ok().headers(headers).contentLength(profile.getFileContent().length).contentType(MediaType.parseMediaType(profile.getMimetype())).body(profile.getFileContent());
+		        headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(profile.getFileContent().length));
+		        headers.add(HttpHeaders.CONTENT_TYPE, profile.getMimetype());
+		        results = new ResponseEntity<>(profile.getFileContent(),headers,HttpStatus.OK);
+		       // results =  ResponseEntity.ok().headers(headers).contentLength(profile.getFileContent().length).contentType(MediaType.parseMediaType(profile.getMimetype())).body(profile.getFileContent());
 			}
 		} catch (Exception e) {
-//			results = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			results = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			logger.error("Error occured while downloading file and error is:{}  ", e);
 		}
 		logger.info("===>End Execution of fileDownload===>");
