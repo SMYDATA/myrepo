@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.smydata.model.JobModel;
 import com.smydata.model.User;
 import com.smydata.model.util.SmydataConstants;
 import com.smydata.user.service.UserService;
@@ -25,7 +26,7 @@ import com.smydata.user.service.UserService;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
-@SessionAttributes("userData")
+//@SessionAttributes("userData")
 public class UserController implements SmydataConstants {
 
 	@Autowired
@@ -54,7 +55,7 @@ public class UserController implements SmydataConstants {
 		
 		try {
 			if (!blocked) {
-				message = validateUser(user);
+				message = validateUser(user);//validate User if already exist
 			} else {
 				message = SUCCESS;
 			}
@@ -107,12 +108,12 @@ public class UserController implements SmydataConstants {
 		User userData = null;
 
 		try {
-			HttpSession session = request.getSession();
+			/*HttpSession session = request.getSession();
 			if (session != null) {
 				Object obj = session.getAttribute("userData");
 				if (obj != null && obj instanceof User)
 					session.removeAttribute("userData");
-			}
+			}*/
 			if (user != null) {
 				logger.info("===>loginUser mobile::" + user.getMobile());
 				userData = userService.getUserDetails(user.getMobile());
@@ -121,11 +122,12 @@ public class UserController implements SmydataConstants {
 							&& userData.getPassword() != null
 							&& userData.getPassword().equalsIgnoreCase(user.getPassword())) {
 						results = new ResponseEntity<>(userData, HttpStatus.OK);
-						session.setAttribute("userData", userData);
+//						session.setAttribute("userData", userData);
 					} else {
 						results = new ResponseEntity<>(HttpStatus.OK);
 					}
 				} else {
+					userData = null;
 					results = new ResponseEntity<>(userData, HttpStatus.OK);
 				}
 			} else {
@@ -158,6 +160,55 @@ public class UserController implements SmydataConstants {
 		}
 		return results;
 	}
+	
+	@GetMapping("/getJobDetails")
+	public ResponseEntity<?> getJobDetails() {
+		logger.info("===>Begin Execution of getJobDetails method===>");
+		ResponseEntity<?> results = null;
+		List<JobModel> jobs = null;
+
+		try {
+				jobs = userService.getAllJobs();
+				if (jobs != null && !jobs.isEmpty()) {
+						results = new ResponseEntity<>(jobs, HttpStatus.OK);
+				} else {
+					results = new ResponseEntity<>(jobs, HttpStatus.OK);
+				}
+		} catch (Exception e) {
+			results = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			logger.error("Error occured while getting All job Details and error is:{}  ",e);
+		}
+		logger.info("===>End Execution of getJobDetails method===>");
+		return results;
+	}
+	
+	@PostMapping("/saveJobDetails")
+	public ResponseEntity<?> saveJobDetails(List<JobModel> jobsModel) {
+		logger.info("===>Begin Execution of saveJobDetails method===>");
+		ResponseEntity<?> results = null;
+		List<JobModel> jobs = null;
+
+		try {
+				if (jobsModel != null && !jobsModel.isEmpty()) {
+					jobs = userService.saveJobs(jobsModel);
+					if (jobs != null && !jobs.isEmpty()) {
+						results = new ResponseEntity<>(jobs, HttpStatus.OK);
+					} else {
+						results = new ResponseEntity<>(jobs, HttpStatus.OK);
+					}
+					
+				} else {
+					logger.info("===>Received empty data from UI===>");
+					results = new ResponseEntity<>(jobsModel, HttpStatus.OK);
+				}
+		} catch (Exception e) {
+			results = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			logger.error("Error occured while saving jobs info and error is:{}  ",e);
+		}
+		logger.info("===>End Execution of saveJobDetails method===>");
+		return results;
+	}
+	
 	private String validateUser(User user) {
 		String message = SUCCESS;
 		if (user != null) {

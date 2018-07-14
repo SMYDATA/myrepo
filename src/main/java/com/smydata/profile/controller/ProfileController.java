@@ -257,6 +257,14 @@ public class ProfileController {
 		return profiles;
 		
 	}
+	
+	/**
+	 * To fetch user Profiles
+	 * @param mobile
+	 * @param role
+	 * @param request
+	 * @return
+	 */
 	@GetMapping("/getProfile/{mobile}/{role}")
 	public ResponseEntity<?> getProfiles(@PathVariable("mobile") String mobile, @PathVariable("role") String role, HttpServletRequest request){
 		

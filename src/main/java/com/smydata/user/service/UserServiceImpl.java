@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.smydata.model.JobModel;
 import com.smydata.model.User;
 import com.smydata.user.repository.UserRepository;
 
@@ -13,6 +14,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	JobRepositroy jobRepositroy;
 
 	@Override
 	public User getUserDetails(String mobile) {
@@ -27,6 +31,16 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<User> getAllUserDetails() {
 		return userRepository.findAll();
+	}
+
+	@Override
+	public List<JobModel> getAllJobs() {
+		return jobRepositroy.findAll();
+	}
+
+	@Override
+	public List<JobModel> saveJobs(List<JobModel> data) {
+		return jobRepositroy.saveAll(data);
 	}
 
 }
