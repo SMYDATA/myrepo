@@ -13,18 +13,34 @@ public class ResourceDetail {
 	private String resourceBillRate;
 	private String resourceAvailability;
 	private String client;
+	private String clientLocation;
 	private String employerName;
 	private String employerEmail;
 	private String employerNumber;
 	private String comments;
 	private boolean edit;
-//	private String fileName;
-//	private MultipartFile file;
+	private String jobId;
 	
 	public ResourceDetail() {
 		super();
 	}
 	
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
+	public String getClientLocation() {
+		return clientLocation;
+	}
+
+	public void setClientLocation(String clientLocation) {
+		this.clientLocation = clientLocation;
+	}
+
 	public boolean isEdit() {
 		return edit;
 	}

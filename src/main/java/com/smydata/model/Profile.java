@@ -40,6 +40,8 @@ public class Profile implements Serializable{
 	private String resourceAvailability;
 	@Column(name="client")
 	private String client;
+	@Column(name="client_location")
+	private String clientLocation;
 	@Column(name="employer_name")
 	private String employerName;
 	@Column(name="employer_email")
@@ -57,8 +59,27 @@ public class Profile implements Serializable{
 	private String mimetype;
 	@Column(name="user_mobile")
 	private String userMobile;
+	@Column(name="job_id")
+	private String jobId;
+	
 	public Profile() {
 		super();
+	}
+
+	public String getClientLocation() {
+		return clientLocation;
+	}
+
+	public void setClientLocation(String clientLocation) {
+		this.clientLocation = clientLocation;
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
 	}
 
 	public String getUserMobile() {

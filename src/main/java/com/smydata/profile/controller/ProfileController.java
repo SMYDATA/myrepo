@@ -147,7 +147,7 @@ public class ProfileController {
 	}
 	
 	@PostMapping(value ="/saveProfile/{userMobile}")
-	public ResponseEntity<?> saveResourceDetails(@RequestBody List<ResourceDetail> resources, @PathVariable("userMobile") String userMobile){
+	public ResponseEntity<?> saveProfiles(@RequestBody List<ResourceDetail> resources, @PathVariable("userMobile") String userMobile){
 		logger.info("===>Begin Execution of saveResourceDetails===>");
 		ResponseEntity<?> results = null;
 		List<Profile> profiles = null;
@@ -230,6 +230,7 @@ public class ProfileController {
 			}
 			
 			profile.setClient(resource.getClient());
+			profile.setClientLocation(resource.getClientLocation());
 			profile.setComments(resource.getComments());
 			profile.setEmployerEmail(resource.getEmployerEmail());
 			profile.setEmployerName(resource.getEmployerName());
@@ -245,6 +246,7 @@ public class ProfileController {
 			profile.setResourceVisaType(resource.getResourceVisaType());
 			profile.setResourceLocation(resource.getResourceLocation());
 			profile.setUserMobile(userMobile);
+			profile.setJobId(resource.getJobId());
 			profiles.add(profile);
 			if(resource.isEdit()) {
 				ProfileHistory profileHistory = new ProfileHistory();

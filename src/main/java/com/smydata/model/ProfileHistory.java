@@ -45,6 +45,8 @@ public class ProfileHistory implements Serializable{
 	private String resourceAvailability;
 	@Column(name="client")
 	private String client;
+	@Column(name="client_location")
+	private String clientLocation;
 	@Column(name="employer_name")
 	private String employerName;
 	@Column(name="employer_email")
@@ -55,6 +57,8 @@ public class ProfileHistory implements Serializable{
 	private String comments;
 	@Column(name="file_name")
 	private String fileName;
+	@Column(name="job_id")
+	private String jobId;
 	/*@Column(name="file_content")
 	@Lob
 	byte[] fileContent;

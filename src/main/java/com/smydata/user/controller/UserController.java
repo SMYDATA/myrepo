@@ -161,7 +161,7 @@ public class UserController implements SmydataConstants {
 		return results;
 	}
 	
-	@GetMapping("/getJobDetails")
+	@GetMapping("/getJobs")
 	public ResponseEntity<?> getJobDetails() {
 		logger.info("===>Begin Execution of getJobDetails method===>");
 		ResponseEntity<?> results = null;
@@ -172,6 +172,7 @@ public class UserController implements SmydataConstants {
 				if (jobs != null && !jobs.isEmpty()) {
 						results = new ResponseEntity<>(jobs, HttpStatus.OK);
 				} else {
+					logger.info("===>Jobs not found===>");
 					results = new ResponseEntity<>(jobs, HttpStatus.OK);
 				}
 		} catch (Exception e) {
@@ -182,8 +183,8 @@ public class UserController implements SmydataConstants {
 		return results;
 	}
 	
-	@PostMapping("/saveJobDetails")
-	public ResponseEntity<?> saveJobDetails(List<JobModel> jobsModel) {
+	@PostMapping("/addJob")
+	public ResponseEntity<?> saveJobDetails(@RequestBody List<JobModel> jobsModel) {
 		logger.info("===>Begin Execution of saveJobDetails method===>");
 		ResponseEntity<?> results = null;
 		List<JobModel> jobs = null;

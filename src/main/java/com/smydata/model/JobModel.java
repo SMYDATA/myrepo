@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="job")
+@Table(name="job_detail")
 public class JobModel implements Serializable {
 	
 	/**
@@ -19,50 +19,68 @@ public class JobModel implements Serializable {
 	private static final long serialVersionUID = -4991247567467759753L;
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="id")
-	private Long id;
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="job_id")
+	private Long jobId;
 	@Column(name="technology")
-	private String technology;
+	private String resourceTechnology;
 	@Column(name="experience")
 	private int experience;
 	@Column(name="visaType")
-	private String visaType;
+	private String resourceVisaType;
 	@Column(name="description")
-	private String desc;
+	private String description;
+	@Column(name="comments")
+	private String comments;
 	public JobModel() {
 		super();
 	}
-	public Long getId() {
-		return id;
+	
+	public Long getJobId() {
+		return jobId;
 	}
-	public void setId(Long id) {
-		this.id = id;
+
+	public void setJobId(Long jobId) {
+		this.jobId = jobId;
 	}
-	public String getTechnology() {
-		return technology;
+
+	public String getDescription() {
+		return description;
 	}
-	public void setTechnology(String technology) {
-		this.technology = technology;
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
+
+	public String getResourceTechnology() {
+		return resourceTechnology;
+	}
+
+	public void setResourceTechnology(String resourceTechnology) {
+		this.resourceTechnology = resourceTechnology;
+	}
+
+	public String getResourceVisaType() {
+		return resourceVisaType;
+	}
+
+	public void setResourceVisaType(String resourceVisaType) {
+		this.resourceVisaType = resourceVisaType;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
 	public int getExperience() {
 		return experience;
 	}
 	public void setExperience(int experience) {
 		this.experience = experience;
 	}
-	public String getVisaType() {
-		return visaType;
-	}
-	public void setVisaType(String visaType) {
-		this.visaType = visaType;
-	}
-	public String getDesc() {
-		return desc;
-	}
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-	
 	
 }
