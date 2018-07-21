@@ -314,6 +314,42 @@ public class ProfileController {
 	}
 	
 	/**
+	 * Get applied profiles for specified Job Id
+	 * @param jobId
+	 * @return
+	 */
+	@GetMapping("/getProfilesByJobId/{jobId}")
+	public ResponseEntity<?> getProfilesByJobId(@PathVariable("jobId") String jobId){
+		
+		logger.info("===>Begin Execution of getProfilesByJobId===>");
+		ResponseEntity<?> results = null;
+		List<Profile> profiles = null;
+		
+		try {
+			
+			if(jobId != null) {
+				profiles = resourceService.getProfilesByJobId(jobId);
+				if(profiles != null && !profiles.isEmpty()) {
+					logger.info("===>prfiles found for JobId[{}]===>",jobId);
+					results = new ResponseEntity<>(profiles, HttpStatus.OK);
+				} else {
+					logger.info("===>prfiles not found for JobId[{}]===>",jobId);
+					results = new ResponseEntity<>(profiles, HttpStatus.OK);
+				}
+					
+			} else {
+				results = new ResponseEntity<>(profiles, HttpStatus.OK);
+			}
+
+		} catch (Exception e) {
+			results = new ResponseEntity<>(profiles, HttpStatus.NOT_FOUND);
+			logger.error("Error occured while getting profiles for JobId [{}] and error is:{}  ",jobId, e);
+		}
+		logger.info("===>End Execution of getProfilesByJobId()===>");
+		return results;
+	}
+	
+	/**
 	 *  Method for handling file download request from client
 	 * @param mobile
 	 * @param request

@@ -10,4 +10,5 @@ import com.smydata.model.Profile;
 public interface ProfileRepository extends JpaRepository<Profile,String> {
 	List<Profile> findByUserMobile(String mobile);
 	List<Profile> findByResourceNumber(String resourceNo);
+	List<Profile> findByJobId(String jobId);
 }

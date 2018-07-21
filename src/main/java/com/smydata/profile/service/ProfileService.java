@@ -12,4 +12,5 @@ public interface ProfileService {
 	List<Profile> getProfilesByResourceNo(String resourceNo);
 	List<ProfileHistory> saveProfileHistory(List<ProfileHistory> profilesHistory);
 	List<ProfileHistory> getProfileHistory(String mobile);
+	List<Profile> getProfilesByJobId(String jobId);
 }

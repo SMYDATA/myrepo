@@ -19,7 +19,7 @@ public class JobModel implements Serializable {
 	private static final long serialVersionUID = -4991247567467759753L;
 	
 	@Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="job_id")
 	private Long jobId;
 	@Column(name="technology")

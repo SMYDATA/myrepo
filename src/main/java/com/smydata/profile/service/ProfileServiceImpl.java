@@ -48,4 +48,9 @@ public class ProfileServiceImpl implements ProfileService {
 		return resourceRepository.findByResourceNumber(resourceNo);
 	}
 
+	@Override
+	public List<Profile> getProfilesByJobId(String jobId) {
+		return resourceRepository.findByJobId(jobId);
+	}
+
 }
