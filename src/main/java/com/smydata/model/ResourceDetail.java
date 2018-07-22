@@ -18,7 +18,7 @@ public class ResourceDetail {
 	private String employerEmail;
 	private String employerNumber;
 	private String comments;
-	private boolean edit;
+	private boolean readOnly;
 	private String jobId;
 	
 	public ResourceDetail() {
@@ -41,12 +41,12 @@ public class ResourceDetail {
 		this.clientLocation = clientLocation;
 	}
 
-	public boolean isEdit() {
-		return edit;
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 
-	public void setEdit(boolean edit) {
-		this.edit = edit;
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 	public String getResourceName() {

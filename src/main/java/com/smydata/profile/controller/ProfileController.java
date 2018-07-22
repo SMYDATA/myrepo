@@ -147,7 +147,7 @@ public class ProfileController {
 	}
 	
 	@PostMapping(value ="/saveProfile/{userMobile}")
-	public ResponseEntity<?> saveProfiles(@RequestBody List<ResourceDetail> resources, @PathVariable("userMobile") String userMobile){
+	public ResponseEntity<?> saveProfiles(@RequestBody List<ResourceDetail> resources,/* @RequestParam("file") MultipartFile file,*/ @PathVariable("userMobile") String userMobile){
 		logger.info("===>Begin Execution of saveResourceDetails===>");
 		ResponseEntity<?> results = null;
 		List<Profile> profiles = null;
@@ -190,9 +190,16 @@ public class ProfileController {
 		logger.info("===>Begin Execution of saveResourceDetails===>");
 		ResponseEntity<?> results = null;
 		List<ProfileHistory> profilesHistory = null;
+		List<Profile> profiles = null;
 		try {
-			profilesHistory = resourceService.getProfileHistory(userMobile);
-			results = new ResponseEntity<>(profilesHistory, HttpStatus.OK);
+			if(userMobile.length()==10) {
+				profilesHistory = resourceService.getProfileHistory(userMobile);
+				results = new ResponseEntity<>(profilesHistory, HttpStatus.OK);	
+			} else {
+				profiles = resourceService.getProfilesByJobId(userMobile);
+				results = new ResponseEntity<>(profiles, HttpStatus.OK);
+			}
+			
 		} catch (Exception e) {
 			results = new ResponseEntity<>(profilesHistory, HttpStatus.NOT_FOUND);
 			logger.error("Error occured while getting Profile History and error is:  ", e);
@@ -247,8 +254,9 @@ public class ProfileController {
 			profile.setResourceLocation(resource.getResourceLocation());
 			profile.setUserMobile(userMobile);
 			profile.setJobId(resource.getJobId());
+			profile.setReadOnly(true);
 			profiles.add(profile);
-			if(resource.isEdit()) {
+			if(resource.isReadOnly()) {
 				ProfileHistory profileHistory = new ProfileHistory();
 				BeanUtils.copyProperties(profile,profileHistory);
 				profilesHistory = new ArrayList<>();

@@ -141,6 +141,44 @@ public class UserController implements SmydataConstants {
 		return results;
 	}
 	
+	@PostMapping("/editUser")
+	public ResponseEntity<?> editUser(@RequestBody User user) {
+		logger.info("===>Begin Execution of editUser method===>");
+		ResponseEntity<?> results = null;
+		User userData = null;
+		
+
+		try {
+			if (user != null) {
+				logger.info("===>editUser mobile::" + user.getMobile());
+				User userDataFromDb = userService.getUserDetails(user.getMobile());
+				if (userDataFromDb != null) {
+					userDataFromDb.setEmail(user.getEmail());
+					userDataFromDb.setUserName(user.getUserName());
+					userData = userService.saveUser(userDataFromDb);
+					if(userData != null) {
+						logger.info("===>User data updated successfully===>");
+						results = new ResponseEntity<>(userData, HttpStatus.OK);
+					} else {
+						userData = null;
+						results = new ResponseEntity<>(userData, HttpStatus.OK);
+					}
+				} else {
+					logger.info("===>Records not found for user mobile[{}]===>",user.getMobile());
+					userData = null;
+					results = new ResponseEntity<>(userData, HttpStatus.OK);
+				}
+			} else {
+				results = new ResponseEntity<>(userData, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			results = new ResponseEntity<>(userData, HttpStatus.NOT_FOUND);
+			logger.error("Error occured while updating user data and error is:{}  ", e);
+		}
+		logger.info("===>End Execution of editUser method===>");
+		return results;
+	}
+	
 	@GetMapping("/getUsers")
 	public ResponseEntity<?> getUserDetails() {
 		logger.info("===>Begin Execution of loginUser method===>");

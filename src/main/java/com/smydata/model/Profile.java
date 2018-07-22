@@ -61,9 +61,18 @@ public class Profile implements Serializable{
 	private String userMobile;
 	@Column(name="job_id")
 	private String jobId;
-	
+	@Column(name="read_only")
+	private boolean readOnly;
 	public Profile() {
 		super();
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 	public String getClientLocation() {
