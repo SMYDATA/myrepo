@@ -43,4 +43,9 @@ public class UserServiceImpl implements UserService{
 		return jobRepositroy.saveAll(data);
 	}
 
+	@Override
+	public User getUserDetailsById(Long id) {
+		return userRepository.findByUserId(id);
+	}
+
 }

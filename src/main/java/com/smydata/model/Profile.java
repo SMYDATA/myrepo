@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -17,11 +19,14 @@ public class Profile implements Serializable{
 	 */
 	private static final long serialVersionUID = -3915856921669737260L;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="profile_id")
+	private Long profileId;
 	@Column(name="resource_name")
 	private String resourceName;
 	@Column(name="resource_email")
 	private String resourceEmail;
-	@Id
 	@Column(name="resource_number")
 	private String resourceNumber;
 	@Column(name="resource_technology")
@@ -63,8 +68,17 @@ public class Profile implements Serializable{
 	private String jobId;
 	@Column(name="read_only")
 	private boolean readOnly;
+	
 	public Profile() {
 		super();
+	}
+
+	public Long getProfileId() {
+		return profileId;
+	}
+
+	public void setProfileId(Long profileId) {
+		this.profileId = profileId;
 	}
 
 	public boolean isReadOnly() {

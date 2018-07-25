@@ -20,11 +20,20 @@ public class ResourceDetail {
 	private String comments;
 	private boolean readOnly;
 	private String jobId;
+	private Long profileId;
 	
 	public ResourceDetail() {
 		super();
 	}
 	
+	public Long getProfileId() {
+		return profileId;
+	}
+
+	public void setProfileId(Long profileId) {
+		this.profileId = profileId;
+	}
+
 	public String getJobId() {
 		return jobId;
 	}

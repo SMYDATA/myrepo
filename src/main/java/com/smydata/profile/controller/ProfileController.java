@@ -153,8 +153,6 @@ public class ProfileController {
 		List<Profile> profiles = null;
 		List<ProfileHistory> profilesHistry = null;
 		List<Profile> profilesObject = null;
-//		List<ResourceDetail> resources = null;
-//		List<MultipartFile> uploadFiles = null;
 		try {
 //			ObjectMapper mapper = new ObjectMapper();
 //			uploadFiles = mapper.readValue(file, new TypeReference<List<MultipartFile>>() {});
@@ -185,18 +183,18 @@ public class ProfileController {
 		return results;
 	}
 	
-	@GetMapping(value ="/getProfileHistroy/{userMobile}")
-	public ResponseEntity<?> getProfileHistory(@PathVariable("userMobile") String userMobile){
+	@GetMapping(value ="/getProfileHistroy/{userMobile}/{profileId}")
+	public ResponseEntity<?> getProfileHistory(@PathVariable("userMobile") String userMobile, @PathVariable("profileId") Long profileId){
 		logger.info("===>Begin Execution of saveResourceDetails===>");
 		ResponseEntity<?> results = null;
 		List<ProfileHistory> profilesHistory = null;
 		List<Profile> profiles = null;
 		try {
-			if(userMobile.length()==10) {
-				profilesHistory = resourceService.getProfileHistory(userMobile);
+			if(userMobile.length()>=10) {
+				profilesHistory = resourceService.getProfileHistory(profileId);
 				results = new ResponseEntity<>(profilesHistory, HttpStatus.OK);	
 			} else {
-				profiles = resourceService.getProfilesByJobId(userMobile);
+				profiles = resourceService.getProfilesByJobId(userMobile);//here userMobile is JobId passed from UI
 				results = new ResponseEntity<>(profiles, HttpStatus.OK);
 			}
 			
@@ -254,6 +252,7 @@ public class ProfileController {
 			profile.setResourceLocation(resource.getResourceLocation());
 			profile.setUserMobile(userMobile);
 			profile.setJobId(resource.getJobId());
+			profile.setProfileId(resource.getProfileId());
 			profile.setReadOnly(true);
 			profiles.add(profile);
 			if(resource.isReadOnly()) {

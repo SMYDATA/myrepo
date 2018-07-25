@@ -39,8 +39,8 @@ public class ProfileServiceImpl implements ProfileService {
 	}
 
 	@Override
-	public List<ProfileHistory> getProfileHistory(String mobile) {
-		return profileHistoryRepository.findByResourceNumber(mobile);
+	public List<ProfileHistory> getProfileHistory(Long profileId) {
+		return profileHistoryRepository.findByProfileId(profileId);
 	}
 
 	@Override

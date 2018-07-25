@@ -7,6 +7,7 @@ import com.smydata.model.User;
 
 public interface UserService {
 	User getUserDetails(String mobile);
+	User getUserDetailsById(Long id);
 	List<User> getAllUserDetails();
 	User saveUser(User user);
 	List<JobModel> getAllJobs();

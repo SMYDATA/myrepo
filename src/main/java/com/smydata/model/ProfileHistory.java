@@ -23,6 +23,8 @@ public class ProfileHistory implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="id")
 	private Long id;
+	@Column(name="profile_id")
+	private Long profileId;
 	@Column(name="resource_name")
 	private String resourceName;
 	@Column(name="resource_email")

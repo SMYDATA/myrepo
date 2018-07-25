@@ -8,5 +8,5 @@ import com.smydata.model.ProfileHistory;
 
 
 public interface ProfileHistoryRepository extends JpaRepository<ProfileHistory,Long> {
-	List<ProfileHistory> findByResourceNumber(String resourceNo);
+	List<ProfileHistory> findByProfileId(Long profileId);
 }

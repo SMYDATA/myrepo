@@ -1,6 +1,7 @@
 package com.smydata.model;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,10 +33,21 @@ public class JobModel implements Serializable {
 	private String description;
 	@Column(name="comments")
 	private String comments;
+	@Column(name="create_date")
+	private Date createDate;
+	
 	public JobModel() {
 		super();
 	}
 	
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
 	public Long getJobId() {
 		return jobId;
 	}

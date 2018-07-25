@@ -1,9 +1,10 @@
 package com.smydata.user.controller;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
 import com.smydata.model.JobModel;
 import com.smydata.model.User;
 import com.smydata.model.util.SmydataConstants;
@@ -101,6 +100,12 @@ public class UserController implements SmydataConstants {
 		return results;
 	}
 	
+	/**
+	 * login User verification
+	 * @param user
+	 * @param request
+	 * @return
+	 */
 	@PostMapping("/loginUser")
 	public ResponseEntity<?> loginUser(@RequestBody User user, HttpServletRequest request) {
 		logger.info("===>Begin Execution of loginUser method===>");
@@ -108,12 +113,6 @@ public class UserController implements SmydataConstants {
 		User userData = null;
 
 		try {
-			/*HttpSession session = request.getSession();
-			if (session != null) {
-				Object obj = session.getAttribute("userData");
-				if (obj != null && obj instanceof User)
-					session.removeAttribute("userData");
-			}*/
 			if (user != null) {
 				logger.info("===>loginUser mobile::" + user.getMobile());
 				userData = userService.getUserDetails(user.getMobile());
@@ -122,7 +121,6 @@ public class UserController implements SmydataConstants {
 							&& userData.getPassword() != null
 							&& userData.getPassword().equalsIgnoreCase(user.getPassword())) {
 						results = new ResponseEntity<>(userData, HttpStatus.OK);
-//						session.setAttribute("userData", userData);
 					} else {
 						results = new ResponseEntity<>(HttpStatus.OK);
 					}
@@ -150,8 +148,8 @@ public class UserController implements SmydataConstants {
 
 		try {
 			if (user != null) {
-				logger.info("===>editUser mobile::" + user.getMobile());
-				User userDataFromDb = userService.getUserDetails(user.getMobile());
+				logger.info("===>editUser ID[{}]::", user.getUserId());
+				User userDataFromDb = userService.getUserDetailsById(user.getUserId());
 				if (userDataFromDb != null) {
 					userDataFromDb.setEmail(user.getEmail());
 					userDataFromDb.setUserName(user.getUserName());
@@ -229,6 +227,10 @@ public class UserController implements SmydataConstants {
 
 		try {
 				if (jobsModel != null && !jobsModel.isEmpty()) {
+					Calendar currenttime = Calendar.getInstance();
+					JobModel model = jobsModel.get(0);
+					model.setCreateDate(new Date((currenttime.getTime()).getTime()));
+					jobsModel.set(0, model);
 					jobs = userService.saveJobs(jobsModel);
 					if (jobs != null && !jobs.isEmpty()) {
 						results = new ResponseEntity<>(jobs, HttpStatus.OK);
