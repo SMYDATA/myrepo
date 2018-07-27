@@ -72,6 +72,38 @@ public class ProfileHistory implements Serializable{
 		super();
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getProfileId() {
+		return profileId;
+	}
+
+	public void setProfileId(Long profileId) {
+		this.profileId = profileId;
+	}
+
+	public String getClientLocation() {
+		return clientLocation;
+	}
+
+	public void setClientLocation(String clientLocation) {
+		this.clientLocation = clientLocation;
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
 	public String getUserMobile() {
 		return userMobile;
 	}

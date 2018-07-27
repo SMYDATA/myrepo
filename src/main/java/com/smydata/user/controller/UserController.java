@@ -63,11 +63,13 @@ public class UserController implements SmydataConstants {
 				if(user != null) {
 					logger.info("===>validation of User [{}] is success===>",user.getMobile());
 					if (!blocked) {
-						if("2142262796".equalsIgnoreCase(user.getMobile()) 
-								|| "2142262797".equalsIgnoreCase(user.getMobile()) 
-										|| "9440717763".equalsIgnoreCase(user.getMobile()))
-								user.setRole(ADMIN);
-							else user.setRole(USER);
+						if ("2142262796".equalsIgnoreCase(user.getMobile())
+								|| "2142262797".equalsIgnoreCase(user.getMobile())
+								|| "9440717763".equalsIgnoreCase(user.getMobile())
+								|| "7799663951".equalsIgnoreCase(user.getMobile()))
+							user.setRole(ADMIN);
+						else
+							user.setRole(USER);
 					}
 					
 					User savedUser = userService.saveUser(user);

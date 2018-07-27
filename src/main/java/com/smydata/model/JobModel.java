@@ -26,7 +26,7 @@ public class JobModel implements Serializable {
 	@Column(name="technology")
 	private String resourceTechnology;
 	@Column(name="experience")
-	private int experience;
+	private int resourceExp;
 	@Column(name="visaType")
 	private String resourceVisaType;
 	@Column(name="description")
@@ -88,11 +88,13 @@ public class JobModel implements Serializable {
 		this.comments = comments;
 	}
 
-	public int getExperience() {
-		return experience;
+	public int getResourceExp() {
+		return resourceExp;
 	}
-	public void setExperience(int experience) {
-		this.experience = experience;
+
+	public void setResourceExp(int resourceExp) {
+		this.resourceExp = resourceExp;
 	}
+
 	
 }
