@@ -183,20 +183,25 @@ public class ProfileController {
 		return results;
 	}
 	
-	@GetMapping(value ="/getProfileHistroy/{userMobile}/{profileId}")
-	public ResponseEntity<?> getProfileHistory(@PathVariable("userMobile") String userMobile, @PathVariable("profileId") Long profileId){
+	@GetMapping(value ="/getProfileHistroy/{action}/{profileId}")
+	public ResponseEntity<?> getProfileHistory(@PathVariable("action") String action, @PathVariable("profileId") Long profileId){
 		logger.info("===>Begin Execution of saveResourceDetails===>");
 		ResponseEntity<?> results = null;
 		List<ProfileHistory> profilesHistory = null;
 		List<Profile> profiles = null;
 		try {
-			if(userMobile.length()>=10) {
-				profilesHistory = resourceService.getProfileHistory(profileId);
-				results = new ResponseEntity<>(profilesHistory, HttpStatus.OK);	
+			if(action != null) {
+				if("profile".equalsIgnoreCase(action)) {
+					profilesHistory = resourceService.getProfileHistory(profileId);
+					results = new ResponseEntity<>(profilesHistory, HttpStatus.OK);
+				} else {
+					profiles = resourceService.getProfilesByJobId(String.valueOf(profileId));//here profileId = JobId
+					results = new ResponseEntity<>(profiles, HttpStatus.OK);
+				}	
 			} else {
-				profiles = resourceService.getProfilesByJobId(userMobile);//here userMobile is JobId passed from UI
 				results = new ResponseEntity<>(profiles, HttpStatus.OK);
 			}
+			
 			
 		} catch (Exception e) {
 			results = new ResponseEntity<>(profilesHistory, HttpStatus.NOT_FOUND);
