@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Null;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +20,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smydata.model.FileModel;
 import com.smydata.model.Profile;
 import com.smydata.model.ProfileHistory;
@@ -147,24 +147,25 @@ public class ProfileController {
 	}
 	
 	@PostMapping(value ="/saveProfile/{userMobile}")
-	public ResponseEntity<?> saveProfiles(@RequestBody List<ResourceDetail> resources,/* @RequestParam("file") MultipartFile file,*/ @PathVariable("userMobile") String userMobile){
+	public ResponseEntity<?> saveProfiles(@RequestParam("profile") String profile, @RequestParam("file") MultipartFile file, @PathVariable("userMobile") String userMobile){
 		logger.info("===>Begin Execution of saveResourceDetails===>");
 		ResponseEntity<?> results = null;
 		List<Profile> profiles = null;
-		List<ProfileHistory> profilesHistry = null;
 		List<Profile> profilesObject = null;
+//		List<ResourceDetail> resources = null;
+		ResourceDetail resourceDetails = null;
 		try {
-//			ObjectMapper mapper = new ObjectMapper();
-//			uploadFiles = mapper.readValue(file, new TypeReference<List<MultipartFile>>() {});
+			ObjectMapper mapper = new ObjectMapper();
+			resourceDetails = mapper.readValue(profile, new TypeReference<ResourceDetail>() {});
 //			resources = mapper.readValue(profile, new TypeReference<List<ResourceDetail>>() {});
-			if(resources != null && !resources.isEmpty()) {
-				profilesObject = convertResourceToProfileObject(resources, userMobile);
+			if(resourceDetails != null) {
+				profilesObject = convertResourceToProfileObject(resourceDetails, userMobile,file);
 				
 				if(profilesObject != null && !profilesObject.isEmpty()) {
 						profiles = resourceService.saveResourceDetail(profilesObject);//Save Profiles
 				}
 				 if(profilesHistory != null && !profilesHistory.isEmpty()) {
-							 profilesHistry = resourceService.saveProfileHistory(profilesHistory);//Save history of Profiles
+					 List<ProfileHistory> profilesHistry = resourceService.saveProfileHistory(profilesHistory);//Save history of Profiles
 				 }
 				if(profiles != null && !profiles.isEmpty()) {
 					results = new ResponseEntity<>(profiles, HttpStatus.OK);
@@ -211,32 +212,18 @@ public class ProfileController {
 		return results;
 	}
 	
-	private List<Profile> convertResourceToProfileObject(List<ResourceDetail> resources, String userMobile) throws IOException {
+	private List<Profile> convertResourceToProfileObject(ResourceDetail resource, String userMobile,MultipartFile file) throws IOException {
 		List<Profile> profiles = new ArrayList<>();
-		/*Map<Integer,FileModel> filesMap = null;
-		HttpSession session = request.getSession();
-		if(session!=null) {
-			Object object = session.getAttribute("filesMap");
-			if(object != null && object instanceof HashMap) {
-				filesMap = (Map<Integer, FileModel>) object;
-			}
-		}*/
+		
 		if(profilesHistory !=null && !profilesHistory.isEmpty())
 			profilesHistory.clear();
 				
-		for(int i=0;i<resources.size();i++) {
-			ResourceDetail resource = resources.get(i);
+		
 			Profile profile = new Profile();
-			if(filesMap != null && !filesMap.isEmpty()) {
-				for(Integer key:filesMap.keySet()) {
-					if(key == i) {
-						FileModel fileModel = filesMap.get(key);
-						profile.setFileContent(fileModel.getFileContent());
-						profile.setFileName(fileModel.getFileName());
-						profile.setMimetype(fileModel.getMimeType());
-						break;
-					}
-				}
+			if(file != null) {
+				profile.setFileContent(file.getBytes());
+				profile.setFileName(file.getOriginalFilename());
+				profile.setMimetype(file.getContentType());
 			}
 			
 			profile.setClient(resource.getClient());
@@ -266,7 +253,6 @@ public class ProfileController {
 				profilesHistory = new ArrayList<>();
 				profilesHistory.add(profileHistory);
 			}
-		}
 		
 		return profiles;
 		

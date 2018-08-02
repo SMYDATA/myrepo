@@ -1,5 +1,6 @@
 package com.smydata.model;
 
+
 public class ResourceDetail {
 	
 	private String resourceName;
@@ -21,11 +22,47 @@ public class ResourceDetail {
 	private boolean readOnly;
 	private String jobId;
 	private Long profileId;
+	private String fileName;
+	byte[] fileContent;
+	private String mimetype;
+	private String userMobile;
 	
 	public ResourceDetail() {
 		super();
 	}
 	
+	public String getUserMobile() {
+		return userMobile;
+	}
+
+	public void setUserMobile(String userMobile) {
+		this.userMobile = userMobile;
+	}
+
+	public byte[] getFileContent() {
+		return fileContent;
+	}
+
+	public void setFileContent(byte[] fileContent) {
+		this.fileContent = fileContent;
+	}
+
+	public String getMimetype() {
+		return mimetype;
+	}
+
+	public void setMimetype(String mimetype) {
+		this.mimetype = mimetype;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	public Long getProfileId() {
 		return profileId;
 	}
