@@ -773,6 +773,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var httpOptions = {
     headers: new __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["c" /* HttpHeaders */]({ 'Content-Type': 'application/json' })
 };
+var urlProvider = window.location.origin;
 var ServiceService = /** @class */ (function () {
     function ServiceService(http, cookie) {
         this.http = http;
@@ -786,6 +787,7 @@ var ServiceService = /** @class */ (function () {
         this.userRole = this.role.asObservable();
         this.job = new __WEBPACK_IMPORTED_MODULE_2_rxjs_BehaviorSubject__["a" /* BehaviorSubject */]({});
         this.jobData = this.job.asObservable();
+        console.log(urlProvider);
     }
     ServiceService.prototype.changeUserCheck = function (userCheck) {
         console.log('userCheck:' + userCheck);
@@ -802,41 +804,41 @@ var ServiceService = /** @class */ (function () {
     ServiceService.prototype.register = function (data) {
         var body = JSON.stringify(data);
         console.log(data);
-        var url = 'http://localhost:8080/api/registerUser/false';
+        var url = urlProvider + '/api/registerUser/false';
         return this.http.post(url, body, httpOptions);
     };
     ServiceService.prototype.editUser = function (data) {
         var body = JSON.stringify(data);
         console.log(data);
-        var url = 'http://localhost:8080/api/editUser';
+        var url = urlProvider + '/api/editUser';
         return this.http.post(url, body, httpOptions);
     };
     ServiceService.prototype.loginUser = function (data) {
         var body = JSON.stringify(data);
         console.log(data);
-        var url = 'http://localhost:8080/api/loginUser';
+        var url = urlProvider + '/api/loginUser';
         console.log(url);
         return this.http.post(url, body, httpOptions);
     };
     ServiceService.prototype.getProfile = function (userMobile, role) {
         console.log('getProfileuserMobile:' + userMobile + ' getProfile roleVal:' + role);
-        var url = 'http://localhost:8080/api/getProfile/' + userMobile + '/' + role;
+        var url = urlProvider + '/api/getProfile/' + userMobile + '/' + role;
         return this.http.get(url);
     };
     ;
     ServiceService.prototype.getProfileHistroy = function (id, action) {
         console.log(action);
-        var url = 'http://localhost:8080/api/getProfileHistroy/' + action + '/' + id;
+        var url = urlProvider + '/api/getProfileHistroy/' + action + '/' + id;
         return this.http.get(url);
     };
     ;
     ServiceService.prototype.getUsers = function () {
-        var url = 'http://localhost:8080/api/getUsers';
+        var url = urlProvider + '/api/getUsers';
         return this.http.get(url);
     };
     ;
     ServiceService.prototype.updateUser = function (data) {
-        var url = 'http://localhost:8080/api/registerUser/true';
+        var url = urlProvider + '/api/registerUser/true';
         return this.http.post(url, data);
     };
     ServiceService.prototype.saveProfile = function (profile, userMobile, file) {
@@ -857,27 +859,27 @@ var ServiceService = /** @class */ (function () {
         // let options1 = new RequestOptions({ headers: headers1 });
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["c" /* HttpHeaders */]();
         headers.append('Content-Type', 'application/form-data');
-        var url = 'http://localhost:8080/api/saveProfile/' + userMobile;
+        var url = urlProvider + '/api/saveProfile/' + userMobile;
         return this.http.post(url, formdata, { headers: headers });
     };
     ServiceService.prototype.downloadProfile = function (userMobile) {
         console.log(userMobile);
-        var url = 'http://localhost:8080/api/downloadProfile/' + userMobile;
+        var url = urlProvider + '/api/downloadProfile/' + userMobile;
         return this.http.get(url);
     };
     ServiceService.prototype.saveAttachment = function (file) {
         console.log(file);
-        var url = 'http://localhost:8080/api/saveFile';
+        var url = urlProvider + '/api/saveFile';
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["c" /* HttpHeaders */]();
         headers.append('Content-Type', 'application/form-data');
         return this.http.post(url, file, { headers: headers });
     };
     ServiceService.prototype.addJob = function (data) {
-        var url = 'http://localhost:8080/api/addJob';
+        var url = urlProvider + '/api/addJob';
         return this.http.post(url, data);
     };
     ServiceService.prototype.getJobs = function () {
-        var url = 'http://localhost:8080/api/getJobs';
+        var url = urlProvider + '/api/getJobs';
         return this.http.get(url);
     };
     ServiceService.prototype.logout = function () {
